@@ -1,4 +1,13 @@
-# Angular QuickStart Source
+# Angular Snake Xenzia
+
+The end goal of this project is to emulate the Snake Xenzia game as seen on
+the Nokia X1 phone.
+
+So far this project was initiated using the [Angular quickstart seed](https://angular.io/docs/ts/latest/quickstart.html). It then incorporates
+a canvas as demonstrated in the [angular2-canvas-examples project](https://github.com/sflahave/angular2-canvas-examples).
+
+# Documentation to clean up
+
 [![Build Status][travis-badge]][travis-badge-url]
 
 This repository holds the TypeScript source code of the [angular.io quickstart](https://angular.io/docs/ts/latest/quickstart.html),
@@ -14,11 +23,11 @@ Please keep that in mind before posting issues and PRs.
 
 ## Prerequisites
 
-Node.js and npm are essential to Angular development. 
-    
+Node.js and npm are essential to Angular development.
+
 <a href="https://docs.npmjs.com/getting-started/installing-node" target="_blank" title="Installing Node.js and updating npm">
 Get it now</a> if it's not already installed on your machine.
- 
+
 **Verify that you are running at least node `v4.x.x` and npm `3.x.x`**
 by running `node -v` and `npm -v` in a terminal/console window.
 Older versions produce errors.
@@ -69,7 +78,7 @@ npm install
 npm start
 ```
 
-The `npm start` command first compiles the application, 
+The `npm start` command first compiles the application,
 then simultaneously re-compiles and runs the `lite-server`.
 Both the compiler and the server watch for file changes.
 
