@@ -1,4 +1,4 @@
-import { Component, Directive, ViewChild, ElementRef, HostListener, Input, Renderer  } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer  } from '@angular/core';
 
 @Component({
   selector: 'my-snake-grid',
@@ -15,7 +15,7 @@ export class MySnakeGridComponent {
   }
 
   ngAfterViewInit() {
-    console.log("Initialize grid");
+    console.log('Initialize grid');
     this.canvas = this.canvasRef.nativeElement;
     this.canvas.width = 200;
     this.canvas.height = 200;
@@ -24,19 +24,25 @@ export class MySnakeGridComponent {
   }
 
   draw() {
-    console.log("Draw grid");
+    console.log('Draw grid');
     if (this.canvas.getContext) {
-      var ctx = this.canvas.getContext('2d');
+      let ctx = this.canvas.getContext('2d');
+      let w = this.canvas.width;
+      let h = this.canvas.height;
       //ctx.fillStyle = "#fefefe";
       //ctx.fillRect(0,0,200,200);
       ctx.beginPath();
-      ctx.arc(this.canvas.width*.5,this.canvas.height*.5,this.canvas.width*.4,0,Math.PI*2,true); // Outer circle
-      ctx.moveTo(this.canvas.width*0.80,this.canvas.height*.45);
-      ctx.arc(this.canvas.width*.5, this.canvas.height*.45, this.canvas.width*.30, 0, Math.PI, false);  // Mouth (clockwise)
-      ctx.moveTo(this.canvas.width*.35+this.canvas.width*0.05, this.canvas.height*.40);
-      ctx.arc(this.canvas.width*.35,this.canvas.height*.40, this.canvas.width*0.05,0,Math.PI*2,true);  // Left eye
-      ctx.moveTo(this.canvas.width*.65+this.canvas.width*0.05,this.canvas.height*.40);
-      ctx.arc(this.canvas.width*.65,this.canvas.height*.40, this.canvas.width*0.05,0,Math.PI*2,true);  // Right eye
+      // Outer circle
+      ctx.arc(w*.5, h*.5, w*.4, 0, Math.PI*2, true);
+      ctx.moveTo(w*0.80, h*.45);
+      // Mouth (clockwise)
+      ctx.arc(w*.5, h*.45, w*.30, 0, Math.PI, false);
+      ctx.moveTo(w*.35 + w*0.05, h*.40);
+      // Left eye
+      ctx.arc(w*.35, h*.40, w*0.05, 0, Math.PI*2, true);
+      ctx.moveTo(w*.65 + w*0.05, h*.40);
+      // Right eye
+      ctx.arc(w*.65, h*.40, w*0.05, 0, Math.PI*2, true);
       ctx.strokeStyle = 'black';
       ctx.stroke();
     }
