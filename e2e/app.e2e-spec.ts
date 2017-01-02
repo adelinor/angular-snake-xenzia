@@ -12,4 +12,8 @@ describe('QuickStart E2E Tests', function () {
     expect(element(by.css('h1')).getText()).toEqual(expectedMsg);
   });
 
+  it('Display grid should exist', function () {
+    expect(element(by.css('my-snake-grid')).isPresent()).toBe(true);
+  });
+
 });
