@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Renderer  } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HostListener, NgZone } from '@angular/core';
 
 class Direction {
@@ -92,7 +92,6 @@ export class MySnakeGridComponent {
     this.canvas = this.canvasRef.nativeElement;
     this.canvas.width = 200;
     this.canvas.height = 200;
-    //this.draw();
     this.running = true;
     this.ngZone.runOutsideAngular(() => this.paintLoop());
   }
@@ -117,7 +116,7 @@ export class MySnakeGridComponent {
    requestAnimationFrame(() => this.paintLoop());
   }
 
-  draw() {
+  drawSmiley() {
     console.log('Draw grid');
     if (this.canvas.getContext) {
       let ctx = this.canvas.getContext('2d');
