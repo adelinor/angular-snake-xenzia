@@ -18,6 +18,32 @@ npm start
 After the `npm start` you should see:
 ![App running](./site/img/00_npmstart.png)
 
+## Plan to progress this project
+* Create project using the angular / quickstart seed
+* Draw a canvas as done in sflahave / angular2-canvas-examples
+* Copy and paste code from the nirkaufman / angular-snake project
+  - Respond to click events
+  - Respond to key events
+* Update grid to allow snake to cross top, right, bottom and left borders
+* Draw the snake with red and yellow squares
+* Drop one big red dot of food for every 5 standard dots consumed
+* Add a timer to the big red dot, reduce bonus points, as time goes, and
+  make big red dot disappear when the time is off
+* Create a site with the game as demo
+* Test on mobile and tablet
+* Find a way to indicate up, right, down and left directions for tablets
+* Add an intro screen
+* Make the snake look better
+
+[angular-testing-guide]:
+https://angular.io/docs/ts/latest/guide/testing.html#!#atu-apis
+
+[angular-testing-guide-gerard-sans]:
+https://medium.com/google-developer-experts/angular-2-testing-guide-a485b6cb1ef0#.dag7emp4q
+
+[svg-canvas-in-angular2]:
+https://teropa.info/blog/2016/12/12/graphics-in-angular-2.html
+
 
 [travis-badge]: https://travis-ci.org/adelinor/angular-snake-xenzia.svg?branch=master
 [travis-badge-url]: https://travis-ci.org/adelinor/angular-snake-xenzia

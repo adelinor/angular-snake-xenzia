@@ -1,6 +1,34 @@
 import { Component, ViewChild, ElementRef, Renderer  } from '@angular/core';
 import { HostListener } from '@angular/core';
 
+class Direction {
+  static UP    = 'UP';
+  static RIGHT = 'RIGHT';
+  static DOWN  = 'DOWN';
+  static LEFT  = 'LEFT';
+
+  static fromKey(keyCode: number): string {
+    if (keyCode === 37) {
+      return Direction.LEFT;
+    } else if (keyCode === 38) {
+      return Direction.UP;
+    } else if (keyCode === 39) {
+      return Direction.RIGHT;
+    } else if (keyCode === 40) {
+      return Direction.DOWN;
+    } else {
+      return null;
+    }
+  }
+
+  static opposites(d1: string, d2: string): boolean {
+    return (d1 === Direction.LEFT && d2 === Direction.RIGHT) ||
+      (d1 === Direction.RIGHT && d2 === Direction.LEFT) ||
+      (d1 === Direction.UP && d2 === Direction.DOWN) ||
+      (d1 === Direction.DOWN && d2 === Direction.UP);
+  }
+}
+
 @Component({
   selector: 'my-snake-grid',
   template: `
@@ -15,19 +43,48 @@ export class MySnakeGridComponent {
   private x: number;
   private y: number;
   private running: boolean;
+  private direction: string;
 
   constructor(private el: ElementRef, private renderer: Renderer) {
     this.x = 0;
     this.y = 0;
+    this.direction = Direction.RIGHT;
   }
 
   private getNextX(): number {
-    this.x++;
+    if (this.direction === Direction.LEFT) {
+      this.x--;
+      if (this.x < 0) {
+        this.x = 200;
+      }
+    } else if (this.direction === Direction.RIGHT) {
+      this.x++;
+      if (this.x > 200) {
+        this.x = 0;
+      }
+    }
     return this.x;
   }
 
   private getNextY(): number {
+    if (this.direction === Direction.UP) {
+      this.y--;
+      if (this.y < 0) {
+        this.y = 200;
+      }
+    } else if (this.direction === Direction.DOWN) {
+      this.y++;
+      if (this.y > 200) {
+        this.y = 0;
+      }
+    }
     return this.y;
+  }
+
+  private setDirection(d: string) {
+    if (d && ! Direction.opposites(d, this.direction)) {
+      this.direction = d;
+    }
   }
 
   ngAfterViewInit() {
@@ -89,9 +146,10 @@ export class MySnakeGridComponent {
     console.log(`Click on ${target}`);
   }
 
-  @HostListener('keydown', ['$event'])
-  keypressed(event: any) {
-    console.log(`Key pressed on ${event}`);
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    console.log(`Key pressed on ${event.keyCode}`);
+    this.setDirection(Direction.fromKey(event.keyCode));
   }
 
 }
