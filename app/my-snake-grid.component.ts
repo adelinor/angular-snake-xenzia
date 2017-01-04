@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, Renderer  } from '@angular/core';
-import { HostListener } from '@angular/core';
+import { HostListener, NgZone } from '@angular/core';
 
 class Direction {
   static UP    = 'UP';
@@ -45,7 +45,7 @@ export class MySnakeGridComponent {
   private running: boolean;
   private direction: string;
 
-  constructor(private el: ElementRef, private renderer: Renderer) {
+  constructor(private ngZone: NgZone) {
     this.x = 0;
     this.y = 0;
     this.direction = Direction.RIGHT;
@@ -94,7 +94,7 @@ export class MySnakeGridComponent {
     this.canvas.height = 200;
     //this.draw();
     this.running = true;
-    this.paintLoop();
+    this.ngZone.runOutsideAngular(() => this.paintLoop());
   }
 
   ngOnDestroy() {
