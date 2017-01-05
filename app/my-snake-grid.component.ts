@@ -39,6 +39,11 @@ export class MySnakeGridComponent {
   @ViewChild('canvas')
   canvasRef: ElementRef;
   private canvas: any;
+  private frameNumber: number = 0;
+  // Draw at every {frequency} refresh cycle
+  // 1 will draw at every refresh cycle
+  // 2 every second, etc
+  private frequency: number = 3;
 
   private x: number;
   private y: number;
@@ -105,7 +110,10 @@ export class MySnakeGridComponent {
       return;
     }
 
-    if (this.canvas.getContext) {
+    // Speed control
+    let n = this.frameNumber % this.frequency;
+
+    if (this.canvas.getContext && n === 0) {
       let ctx = this.canvas.getContext('2d');
 
       // Paint current frame
@@ -113,7 +121,8 @@ export class MySnakeGridComponent {
     }
 
     // Schedule next frame
-   requestAnimationFrame(() => this.paintLoop());
+    this.frameNumber++;
+    requestAnimationFrame(() => this.paintLoop());
   }
 
   drawSmiley() {
