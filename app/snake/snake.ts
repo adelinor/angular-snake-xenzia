@@ -10,6 +10,7 @@ export class Snake {
   private direction: Direction;
 
   constructor(private initialLength: number) {
+    // Move this to initialize method to be invoked by the grid
     this.cells = [];
     for (let i = initialLength - 1; i >= 0; i--) {
       this.cells.push({x: i, y: 0});

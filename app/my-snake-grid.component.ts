@@ -118,7 +118,12 @@ export class MySnakeGridComponent {
     if (this.canvas.getContext && n === 0) {
       let ctx = this.canvas.getContext('2d');
 
+      // Delete any previous drawing
+      ctx.fillStyle = `rgb(255,255,255)`;
+      ctx.fillRect(this.x, this.y, 10, 10);
+
       // Paint current frame
+      ctx.fillStyle = `rgb(0,0,0)`;
       ctx.fillRect(this.getNextX(), this.getNextY(), 10, 10);
     }
 
