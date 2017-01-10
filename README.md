@@ -24,6 +24,19 @@ After the `npm start` you should see:
 * Copy and paste code from the nirkaufman / angular-snake project
   - Respond to click events
   - Respond to key events
+  - introduce a snake class to:
+      - memorize the traveling direction,
+      - current length
+      - overall position in the grid
+      - crossing functions
+      - pixel distance between head position and square center
+  - introduce a grid class to:
+      - present itself as a discreet positioning system going from zero to n
+        where n takes into account the width of the drawn grid and the width of
+        the snake.
+  - introduce a drawer to:
+      - draw the grid
+      - draw the snake
 * Update grid to allow snake to cross top, right, bottom and left borders
 * Draw the snake with red and yellow squares
 * Drop one big red dot of food for every 5 standard dots consumed

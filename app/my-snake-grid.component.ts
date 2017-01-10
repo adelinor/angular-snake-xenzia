@@ -1,6 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HostListener, NgZone } from '@angular/core';
 
+import { Grid } from './grid/grid';
+
 class Direction {
   static UP    = 'UP';
   static RIGHT = 'RIGHT';
