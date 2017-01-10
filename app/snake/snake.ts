@@ -3,10 +3,10 @@ import { Direction }  from '../grid/direction';
 
 export class Snake {
 
-  //First cell is the head
+  // First cell is the head
   private cells: Point[];
 
-  //Travelling direction of the snake
+  // Travelling direction of the snake
   private direction: Direction;
 
   constructor(private initialLength: number) {
