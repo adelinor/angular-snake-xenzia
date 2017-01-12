@@ -51,11 +51,13 @@ export class MySnakeGridComponent {
   private y: number;
   private running: boolean;
   private direction: string;
+  private grid: Grid;
 
   constructor(private ngZone: NgZone) {
     this.x = 0;
     this.y = 0;
     this.direction = Direction.RIGHT;
+    this.grid = new Grid(200,200,10);
   }
 
   private getNextX(): number {
@@ -119,11 +121,11 @@ export class MySnakeGridComponent {
       let ctx = this.canvas.getContext('2d');
 
       // Delete any previous drawing
-      ctx.fillStyle = `rgb(255,255,255)`;
+      ctx.fillStyle = 'rgb(255,255,255)';
       ctx.fillRect(this.x, this.y, 10, 10);
 
       // Paint current frame
-      ctx.fillStyle = `rgb(0,0,0)`;
+      ctx.fillStyle = 'rgb(0,0,0)';
       ctx.fillRect(this.getNextX(), this.getNextY(), 10, 10);
     }
 
