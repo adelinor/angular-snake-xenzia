@@ -1,35 +1,9 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HostListener, NgZone } from '@angular/core';
 
-import { Grid } from './grid/grid';
-
-class Direction {
-  static UP    = 'UP';
-  static RIGHT = 'RIGHT';
-  static DOWN  = 'DOWN';
-  static LEFT  = 'LEFT';
-
-  static fromKey(keyCode: number): string {
-    if (keyCode === 37) {
-      return Direction.LEFT;
-    } else if (keyCode === 38) {
-      return Direction.UP;
-    } else if (keyCode === 39) {
-      return Direction.RIGHT;
-    } else if (keyCode === 40) {
-      return Direction.DOWN;
-    } else {
-      return null;
-    }
-  }
-
-  static opposites(d1: string, d2: string): boolean {
-    return (d1 === Direction.LEFT && d2 === Direction.RIGHT) ||
-      (d1 === Direction.RIGHT && d2 === Direction.LEFT) ||
-      (d1 === Direction.UP && d2 === Direction.DOWN) ||
-      (d1 === Direction.DOWN && d2 === Direction.UP);
-  }
-}
+import { Grid }  from './grid/grid';
+import { Point } from './grid/point';
+import { Direction, DirectionUtil } from './grid/direction';
 
 @Component({
   selector: 'my-snake-grid',
@@ -47,60 +21,34 @@ export class MySnakeGridComponent {
   // 2 every second, etc
   private frequency: number = 3;
 
-  private x: number;
-  private y: number;
+  private p: Point;
   private running: boolean;
-  private direction: string;
+  private direction: Direction;
   private grid: Grid;
 
   constructor(private ngZone: NgZone) {
-    this.x = 0;
-    this.y = 0;
-    this.direction = Direction.RIGHT;
+    this.p = new Point(0, 0);
+    this.direction = Direction.Right;
     this.grid = new Grid(200,200,10);
   }
 
-  private getNextX(): number {
-    if (this.direction === Direction.LEFT) {
-      this.x--;
-      if (this.x < 0) {
-        this.x = 200;
-      }
-    } else if (this.direction === Direction.RIGHT) {
-      this.x++;
-      if (this.x > 200) {
-        this.x = 0;
-      }
-    }
-    return this.x;
-  }
-
-  private getNextY(): number {
-    if (this.direction === Direction.UP) {
-      this.y--;
-      if (this.y < 0) {
-        this.y = 200;
-      }
-    } else if (this.direction === Direction.DOWN) {
-      this.y++;
-      if (this.y > 200) {
-        this.y = 0;
-      }
-    }
-    return this.y;
-  }
-
-  private setDirection(d: string) {
-    if (d && ! Direction.opposites(d, this.direction)) {
+  private setDirection(d: Direction) {
+    if (d && ! DirectionUtil.opposites(d, this.direction)) {
       this.direction = d;
+    }
+  }
+
+  private togglePause(keyCode: number) {
+    if (keyCode === 80) {
+      this.running = ! this.running;
     }
   }
 
   ngAfterViewInit() {
     console.log('Initialize grid');
     this.canvas = this.canvasRef.nativeElement;
-    this.canvas.width = 200;
-    this.canvas.height = 200;
+    this.canvas.width = this.grid.width;
+    this.canvas.height = this.grid.height;
     this.running = true;
     this.ngZone.runOutsideAngular(() => this.paintLoop());
   }
@@ -122,11 +70,12 @@ export class MySnakeGridComponent {
 
       // Delete any previous drawing
       ctx.fillStyle = 'rgb(255,255,255)';
-      ctx.fillRect(this.x, this.y, 10, 10);
+      ctx.fillRect(this.p.x, this.p.y, this.grid.cellWidth, this.grid.cellWidth);
 
       // Paint current frame
       ctx.fillStyle = 'rgb(0,0,0)';
-      ctx.fillRect(this.getNextX(), this.getNextY(), 10, 10);
+      this.p = this.grid.getNext(this.p, this.direction);
+      ctx.fillRect(this.p.x, this.p.y, this.grid.cellWidth, this.grid.cellWidth);
     }
 
     // Schedule next frame
@@ -166,7 +115,8 @@ export class MySnakeGridComponent {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     console.log(`Key pressed on ${event.keyCode}`);
-    this.setDirection(Direction.fromKey(event.keyCode));
+    this.setDirection(DirectionUtil.fromKey(event.keyCode));
+    this.togglePause(event.keyCode);
   }
 
 }
