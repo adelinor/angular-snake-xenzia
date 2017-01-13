@@ -18,29 +18,32 @@ export class MySnakeGridComponent {
   private frameNumber: number = 0;
   // Draw at every {frequency} refresh cycle
   // 1 will draw at every refresh cycle
-  // 2 every second, etc
-  private frequency: number = 3;
+  // 2 every second cycle, etc
+  private frequency: number = 2;
 
   private p: Point;
   private running: boolean;
   private direction: Direction;
+  private requestDirection: Direction;
   private grid: Grid;
 
   constructor(private ngZone: NgZone) {
     this.p = new Point(0, 0);
-    this.direction = Direction.Right;
+    this.requestDirection = Direction.Right;
     this.grid = new Grid(200,200,10);
   }
 
   private setDirection(d: Direction) {
     if (d && ! DirectionUtil.opposites(d, this.direction)) {
-      this.direction = d;
+      this.requestDirection = d;
     }
   }
 
-  private togglePause(keyCode: number) {
-    if (keyCode === 80) {
-      this.running = ! this.running;
+  private togglePause() {
+    this.running = ! this.running;
+
+    if (this.running) {
+      requestAnimationFrame(() => this.paintLoop());
     }
   }
 
@@ -70,7 +73,26 @@ export class MySnakeGridComponent {
 
       // Delete any previous drawing
       ctx.fillStyle = 'rgb(255,255,255)';
-      ctx.fillRect(this.p.x, this.p.y, this.grid.cellWidth, this.grid.cellWidth);
+      ctx.fillRect(0,0,200,200);
+
+      // Draw the grid
+      ctx.beginPath();
+
+      ctx.fillStyle = '#cfcfcf';
+
+      for(let i = this.grid.cellWidth; i < this.grid.width; i += this.grid.cellWidth) {
+        ctx.fillRect(i,0,1,this.grid.width);
+      }
+      ctx.stroke();
+
+      for(let i = this.grid.cellWidth; i < this.grid.height; i += this.grid.cellWidth) {
+        ctx.fillRect(0,i,this.grid.height,1);
+      }
+
+      // TODO Assign direction
+      if (this.p.x % this.grid.cellWidth === 0 && this.p.y % this.grid.cellWidth === 0) {
+        this.direction = this.requestDirection;
+      }
 
       // Paint current frame
       ctx.fillStyle = 'rgb(0,0,0)';
@@ -116,7 +138,10 @@ export class MySnakeGridComponent {
   handleKeyboardEvent(event: KeyboardEvent) {
     console.log(`Key pressed on ${event.keyCode}`);
     this.setDirection(DirectionUtil.fromKey(event.keyCode));
-    this.togglePause(event.keyCode);
-  }
 
+    // P key
+    if (event.keyCode === 80) {
+      this.togglePause();
+    }
+  }
 }
