@@ -89,7 +89,7 @@ export class MySnakeGridComponent {
         ctx.fillRect(0,i,this.grid.height,1);
       }
 
-      // TODO Assign direction
+      // Assign direction
       if (this.p.x % this.grid.cellWidth === 0 && this.p.y % this.grid.cellWidth === 0) {
         this.direction = this.requestDirection;
       }

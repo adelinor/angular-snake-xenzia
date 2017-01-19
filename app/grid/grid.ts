@@ -1,7 +1,13 @@
 import { Point }     from './point';
 import { Direction } from './direction';
 
-export class Grid {
+export interface MoveByOneStep {
+
+  getNext(point: Point, direction: Direction): Point;
+
+}
+
+export class Grid implements MoveByOneStep {
   constructor(private _width: number, private _height: number, private _cellWidth: number) {
   }
 

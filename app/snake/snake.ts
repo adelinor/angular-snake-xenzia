@@ -1,5 +1,6 @@
-import { Point }      from '../grid/point';
-import { Direction }  from '../grid/direction';
+import { Point }         from '../grid/point';
+import { Direction }     from '../grid/direction';
+import { MoveByOneStep } from '../grid/grid';
 
 export class Snake {
 
@@ -25,4 +26,20 @@ export class Snake {
   cellAt(position: number): Point {
     return this.cells[position];
   }
+
+  setDirection(direction: Direction) {
+    this.direction = direction;
+  }
+
+  move(mover: MoveByOneStep) {
+    this.moveTo(mover.getNext(this.cells[0], this.direction));
+  }
+
+  moveTo(newHeadPosition: Point) {
+    for (let i = this.cells.length - 1; i > 0; i--) {
+      this.cells[i] = this.cells[i - 1];
+    }
+    this.cells[0] = newHeadPosition;
+  }
+
 }
