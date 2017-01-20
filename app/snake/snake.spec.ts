@@ -10,7 +10,7 @@ describe('Snake', function () {
 
   it('should create horizontal snake', () => {
     expect(snake).toBeDefined();
-    expect(snake.length()).toEqual(3);
+    expect(snake.length).toEqual(3);
     expect(snake.cellAt(2)).toBeDefined();
     expect(snake.cellAt(2).x).toEqual(0);
     expect(snake.cellAt(2).y).toEqual(0);
@@ -28,7 +28,7 @@ describe('Snake', function () {
   it('should move by 1 to the right', () => {
     expect(snake).toBeDefined();
     snake.moveTo( new Point(3, 0) );
-    expect(snake.length()).toEqual(3);
+    expect(snake.length).toEqual(3);
 
     expect(snake.cellAt(2)).toBeDefined();
     expect(snake.cellAt(2).x).toEqual(1);

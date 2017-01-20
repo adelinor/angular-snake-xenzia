@@ -4,6 +4,7 @@ import { HostListener, NgZone } from '@angular/core';
 import { Grid }  from './grid/grid';
 import { Point } from './grid/point';
 import { Direction, DirectionUtil } from './grid/direction';
+import { Snake } from './snake/snake';
 
 @Component({
   selector: 'my-snake-grid',
@@ -23,18 +24,19 @@ export class MySnakeGridComponent {
 
   private p: Point;
   private running: boolean;
-  private direction: Direction;
   private requestDirection: Direction;
   private grid: Grid;
+  private snake: Snake;
 
   constructor(private ngZone: NgZone) {
     this.p = new Point(0, 0);
     this.requestDirection = Direction.Right;
     this.grid = new Grid(200,200,10);
+    this.snake = new Snake(3);
   }
 
   private setDirection(d: Direction) {
-    if (d && ! DirectionUtil.opposites(d, this.direction)) {
+    if (d && ! DirectionUtil.opposites(d, this.snake.direction)) {
       this.requestDirection = d;
     }
   }
@@ -91,13 +93,16 @@ export class MySnakeGridComponent {
 
       // Assign direction
       if (this.p.x % this.grid.cellWidth === 0 && this.p.y % this.grid.cellWidth === 0) {
-        this.direction = this.requestDirection;
+        this.snake.direction = this.requestDirection;
       }
 
       // Paint current frame
       ctx.fillStyle = 'rgb(0,0,0)';
-      this.p = this.grid.getNext(this.p, this.direction);
-      ctx.fillRect(this.p.x, this.p.y, this.grid.cellWidth, this.grid.cellWidth);
+      this.snake.move(this.grid);
+      for (let i = 0; i < this.snake.length; i++) {
+        let c = this.snake.cellAt(i);
+        ctx.fillRect(c.x, c.y, this.grid.cellWidth, this.grid.cellWidth);
+      }
     }
 
     // Schedule next frame
