@@ -71,7 +71,7 @@ describe('Grid', function () {
     expect(g.columns).toEqual(20);
     expect(g.rows).toEqual(20);
 
-    g = new Grid(202,198,10);
+    g = new Grid(202, 198, 10);
     expect(g.columns).toEqual(20);
     expect(g.rows).toEqual(19);
 
