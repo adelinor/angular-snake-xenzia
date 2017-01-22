@@ -8,7 +8,20 @@ export interface MoveByOneStep {
 }
 
 export class Grid implements MoveByOneStep {
+  private _columns: number;
+  private _rows: number;
+
   constructor(private _width: number, private _height: number, private _cellWidth: number) {
+    this._columns = Math.floor(_width / _cellWidth);
+    this._rows = Math.floor(_height / _cellWidth);
+  }
+
+  get columns(): number {
+    return this._columns;
+  }
+
+  get rows(): number {
+    return this._rows;
   }
 
   get width(): number {
