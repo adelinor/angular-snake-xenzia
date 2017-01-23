@@ -20,16 +20,16 @@ export class MySnakeGridComponent {
   // Draw at every {frequency} refresh cycle
   // 1 will draw at every refresh cycle
   // 2 every second cycle, etc
-  private frequency: number = 2;
+  private frequency: number = 6;
 
-  private p: Point;
+  private increment: number;
   private running: boolean;
   private requestDirection: Direction;
   private grid: Grid;
   private snake: Snake;
 
   constructor(private ngZone: NgZone) {
-    this.p = new Point(0, 0);
+    this.increment = 0;
     this.requestDirection = Direction.Right;
     this.grid = new Grid(200,200,10);
     this.snake = new Snake(3);
@@ -91,18 +91,48 @@ export class MySnakeGridComponent {
         ctx.fillRect(0,i,this.grid.height,1);
       }
 
+      // Increment position
+      this.increment++;
+      let f = this.grid.toFactor(this.snake.direction);
+
       // Assign direction
-      if (this.p.x % this.grid.cellWidth === 0 && this.p.y % this.grid.cellWidth === 0) {
+      if (this.increment % this.grid.cellWidth === 0) {
         this.snake.direction = this.requestDirection;
+        this.increment = 0;
+
+        this.snake.move(this.grid);
       }
 
       // Paint current frame
+
+      // Paint increment first
       ctx.fillStyle = 'rgb(0,0,0)';
-      this.snake.move(this.grid);
-      for (let i = 0; i < this.snake.length; i++) {
+      let h = this.snake.cellAt(0);
+
+      ctx.fillRect(
+          (h.x + f.x) * this.grid.cellWidth,
+          (h.y + f.y) * this.grid.cellWidth,
+          this.increment,
+          this.grid.cellWidth);
+
+      // Paint snake
+      ctx.fillStyle = 'rgb(0,0,0)';
+      for (let i = 0; i < this.snake.length - 1; i++) {
         let c = this.snake.cellAt(i);
-        ctx.fillRect(c.x, c.y, this.grid.cellWidth, this.grid.cellWidth);
+        ctx.fillRect(
+            c.x * this.grid.cellWidth,
+            c.y * this.grid.cellWidth,
+            this.grid.cellWidth, this.grid.cellWidth);
       }
+
+      // Paint snake's tails
+      ctx.fillStyle = 'rgb(0,0,0)';
+      let t = this.snake.cellAt(this.snake.length - 1);
+      ctx.fillRect(
+          t.x * this.grid.cellWidth + f.x * this.increment,
+          t.y * this.grid.cellWidth + f.y * this.increment,
+          this.grid.cellWidth - this.increment,
+          this.grid.cellWidth);
     }
 
     // Schedule next frame

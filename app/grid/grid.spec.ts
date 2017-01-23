@@ -15,10 +15,10 @@ describe('Grid', function () {
     expect(next.x).toEqual(1);
     expect(next.y).toEqual(0);
 
-    next = grid.getNext({x: 198, y: 0}, Direction.Right);
+    next = grid.getNext({x: 18, y: 0}, Direction.Right);
 
     expect(next).toBeDefined();
-    expect(next.x).toEqual(199);
+    expect(next.x).toEqual(19);
     expect(next.y).toEqual(0);
 
     next = grid.getNext(next, Direction.Right);
@@ -30,22 +30,22 @@ describe('Grid', function () {
     next = grid.getNext({x: 0, y: 0}, Direction.Left);
 
     expect(next).toBeDefined();
-    expect(next.x).toEqual(199);
+    expect(next.x).toEqual(19);
     expect(next.y).toEqual(0);
 
-    next = grid.getNext({x: 199, y: 0}, Direction.Left);
+    next = grid.getNext({x: 19, y: 0}, Direction.Left);
 
     expect(next).toBeDefined();
-    expect(next.x).toEqual(198);
+    expect(next.x).toEqual(18);
     expect(next.y).toEqual(0);
 
-    next = grid.getNext({x: 0, y: 198}, Direction.Down);
+    next = grid.getNext({x: 0, y: 18}, Direction.Down);
 
     expect(next).toBeDefined();
     expect(next.x).toEqual(0);
-    expect(next.y).toEqual(199);
+    expect(next.y).toEqual(19);
 
-    next = grid.getNext({x: 0, y: 199}, Direction.Down);
+    next = grid.getNext({x: 0, y: 19}, Direction.Down);
 
     expect(next).toBeDefined();
     expect(next.x).toEqual(0);
@@ -55,13 +55,13 @@ describe('Grid', function () {
 
     expect(next).toBeDefined();
     expect(next.x).toEqual(0);
-    expect(next.y).toEqual(199);
+    expect(next.y).toEqual(19);
 
-    next = grid.getNext({x: 0, y: 199}, Direction.Up);
+    next = grid.getNext({x: 0, y: 19}, Direction.Up);
 
     expect(next).toBeDefined();
     expect(next.x).toEqual(0);
-    expect(next.y).toEqual(198);
+    expect(next.y).toEqual(18);
 
   });
 
