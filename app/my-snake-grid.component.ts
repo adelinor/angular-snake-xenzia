@@ -93,7 +93,6 @@ export class MySnakeGridComponent {
 
       // Increment position
       this.increment++;
-      let f = this.grid.toFactor(this.snake.direction);
 
       // Assign direction
       if (this.increment % this.grid.cellWidth === 0) {
@@ -109,11 +108,23 @@ export class MySnakeGridComponent {
       ctx.fillStyle = 'rgb(0,0,0)';
       let h = this.snake.cellAt(0);
 
-      ctx.fillRect(
-          (h.x + f.x) * this.grid.cellWidth,
-          (h.y + f.y) * this.grid.cellWidth,
-          this.increment,
-          this.grid.cellWidth);
+      let hx, hy, width, height;
+      switch (this.snake.direction) {
+        case Direction.Right:
+          hx = (h.x + 1) * this.grid.cellWidth;
+          hy = h.y * this.grid.cellWidth;
+          width = this.increment;
+          height = this.grid.cellWidth;
+          break;
+
+        case Direction.Left:
+          hx = h.x * this.grid.cellWidth - this.increment;
+          hy = h.y * this.grid.cellWidth;
+          width = this.increment;
+          height = this.grid.cellWidth;
+          break;
+      }
+      ctx.fillRect(hx, hy, width, height);
 
       // Paint snake
       ctx.fillStyle = 'rgb(0,0,0)';
@@ -128,11 +139,23 @@ export class MySnakeGridComponent {
       // Paint snake's tails
       ctx.fillStyle = 'rgb(0,0,0)';
       let t = this.snake.cellAt(this.snake.length - 1);
-      ctx.fillRect(
-          t.x * this.grid.cellWidth + f.x * this.increment,
-          t.y * this.grid.cellWidth + f.y * this.increment,
-          this.grid.cellWidth - this.increment,
-          this.grid.cellWidth);
+
+      switch (t.direction) {
+        case Direction.Right:
+          hx = t.x * this.grid.cellWidth + this.increment
+          hy = h.y * this.grid.cellWidth;
+          width = this.grid.cellWidth - this.increment;
+          height = this.grid.cellWidth;
+          break;
+
+        case Direction.Left:
+          hx = t.x * this.grid.cellWidth;
+          hy = t.y * this.grid.cellWidth;
+          width = this.grid.cellWidth - this.increment;
+          height = this.grid.cellWidth;
+          break;
+      }
+      ctx.fillRect(hx, hy, width, height);
     }
 
     // Schedule next frame
