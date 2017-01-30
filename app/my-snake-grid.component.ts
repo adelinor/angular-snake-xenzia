@@ -95,8 +95,8 @@ export class MySnakeGridComponent {
       this.increment++;
 
       // Assign direction
+      this.snake.direction = this.requestDirection;
       if (this.increment % this.grid.cellWidth === 0) {
-        this.snake.direction = this.requestDirection;
         this.increment = 0;
 
         this.snake.move(this.grid);

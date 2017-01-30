@@ -7,13 +7,16 @@ export class Snake {
   // First cell is the head
   private cells: MovingPoint[];
 
+  // Snake traveling direction
+  private _direction: Direction;
+
   constructor(private initialLength: number) {
-    let initialDirection = Direction.Right;
+    this.direction = Direction.Right;
 
     // Move this to initialize method to be invoked by the grid
     this.cells = [];
     for (let i = initialLength - 1; i >= 0; i--) {
-      this.cells.push({x: i, y: 0, direction: initialDirection});
+      this.cells.push({x: i, y: 0, direction: this.direction});
     }
   }
 
@@ -26,11 +29,11 @@ export class Snake {
   }
 
   set direction(direction: Direction) {
-    this.cellAt(0).direction = direction;
+    this._direction = direction;
   }
 
   get direction(): Direction {
-    return this.cellAt(0).direction;
+    return this._direction;
   }
 
   move(mover: MoveByOneStep) {
@@ -41,8 +44,7 @@ export class Snake {
     for (let i = this.cells.length - 1; i > 0; i--) {
       this.cells[i] = this.cells[i - 1];
     }
-    this.cells[0] = new MovingPoint(newHeadPosition.x,
-      newHeadPosition.y, this.direction);
+    this.cells[0] = new MovingPoint(newHeadPosition, this.direction);
   }
 
 }

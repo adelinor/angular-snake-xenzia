@@ -13,9 +13,8 @@ export class Point {
 export class MovingPoint extends Point {
   direction: Direction;
 
-  constructor(xPosition: number, yPosition: number,
-    direction: Direction) {
-    super(xPosition, yPosition);
+  constructor(position: Point, direction: Direction) {
+    super(position.x, position.y);
     this.direction = direction;
   }
 
