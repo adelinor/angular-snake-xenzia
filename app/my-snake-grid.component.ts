@@ -124,6 +124,14 @@ export class MySnakeGridComponent {
           width = this.increment;
           height = this.grid.cellWidth;
           break;
+
+        case Direction.Up:
+          hx = h.x * this.grid.cellWidth;
+          hy = (h.y + 1) * this.grid.cellWidth - this.increment;
+          width = this.grid.cellWidth;
+          height = this.increment;
+          break;
+
       }
       ctx.fillRect(hx, hy, width, height);
 
@@ -156,12 +164,20 @@ export class MySnakeGridComponent {
           height = this.grid.cellWidth - this.increment;
           break;
 
-      case Direction.Left:
-        hx = (t.x + 1) * this.grid.cellWidth;
-        hy = t.y * this.grid.cellWidth;
-        width = this.grid.cellWidth - this.increment;
-        height = this.grid.cellWidth;
-        break;
+        case Direction.Left:
+          hx = (t.x + 1) * this.grid.cellWidth;
+          hy = t.y * this.grid.cellWidth;
+          width = this.grid.cellWidth - this.increment;
+          height = this.grid.cellWidth;
+          break;
+
+        case Direction.Up:
+          hx = t.x * this.grid.cellWidth;
+          hy = (t.y + 1) * this.grid.cellWidth;
+          width = this.grid.cellWidth;
+          height = this.grid.cellWidth - this.increment;
+          break;
+
       }
       ctx.fillRect(hx, hy, width, height);
 
