@@ -20,24 +20,22 @@ export class MySnakeGridComponent {
   // Draw at every {frequency} refresh cycle
   // 1 will draw at every refresh cycle
   // 2 every second cycle, etc
-  private frequency: number = 6;
+  private frequency: number = 20;
 
   private increment: number;
   private running: boolean;
-  private requestDirection: Direction;
   private grid: Grid;
   private snake: Snake;
 
   constructor(private ngZone: NgZone) {
     this.increment = 0;
-    this.requestDirection = Direction.Right;
     this.grid = new Grid(200,200,10);
     this.snake = new Snake(3);
   }
 
   private setDirection(d: Direction) {
     if (d && ! DirectionUtil.opposites(d, this.snake.direction)) {
-      this.requestDirection = d;
+      this.snake.direction = d;
     }
   }
 
@@ -91,11 +89,7 @@ export class MySnakeGridComponent {
         ctx.fillRect(0,i,this.grid.height,1);
       }
 
-      // Increment position
-      this.increment++;
-
       // Assign direction
-      this.snake.direction = this.requestDirection;
       if (this.increment % this.grid.cellWidth === 0) {
         this.increment = 0;
 
@@ -104,17 +98,24 @@ export class MySnakeGridComponent {
 
       // Paint current frame
 
-      // Paint increment first
+      // Paint head
       ctx.fillStyle = 'rgb(0,0,0)';
       let h = this.snake.cellAt(0);
 
       let hx: number, hy: number, width: number, height: number;
       switch (this.snake.direction) {
         case Direction.Right:
-          hx = (h.x + 1) * this.grid.cellWidth;
+          hx = h.x * this.grid.cellWidth;
           hy = h.y * this.grid.cellWidth;
           width = this.increment;
           height = this.grid.cellWidth;
+          break;
+
+        case Direction.Down:
+          hx = h.x * this.grid.cellWidth;
+          hy = h.y * this.grid.cellWidth;
+          width = this.grid.cellWidth;
+          height = this.increment;
           break;
 
         case Direction.Left:
@@ -123,19 +124,12 @@ export class MySnakeGridComponent {
           width = this.increment;
           height = this.grid.cellWidth;
           break;
-
-        case Direction.Down:
-          hx = h.x * this.grid.cellWidth;
-          hy = (h.y + 1) * this.grid.cellWidth;
-          width = this.grid.cellWidth;
-          height = this.increment;
-          break;
       }
       ctx.fillRect(hx, hy, width, height);
 
       // Paint snake
       ctx.fillStyle = 'rgb(0,0,0)';
-      for (let i = 0; i < this.snake.length - 1; i++) {
+      for (let i = 1; i < this.snake.length; i++) {
         let c = this.snake.cellAt(i);
         ctx.fillRect(
             c.x * this.grid.cellWidth,
@@ -149,10 +143,17 @@ export class MySnakeGridComponent {
 
       switch (t.direction) {
         case Direction.Right:
-          hx = t.x * this.grid.cellWidth + this.increment
-          hy = h.y * this.grid.cellWidth;
+          hx = (t.x - 1) * this.grid.cellWidth + this.increment
+          hy = t.y * this.grid.cellWidth;
           width = this.grid.cellWidth - this.increment;
           height = this.grid.cellWidth;
+          break;
+
+        case Direction.Down:
+          hx = t.x * this.grid.cellWidth;
+          hy = (t.y - 1) * this.grid.cellWidth + this.increment
+          width = this.grid.cellWidth;
+          height = this.grid.cellWidth - this.increment;
           break;
 
         case Direction.Left:
@@ -161,15 +162,21 @@ export class MySnakeGridComponent {
           width = this.grid.cellWidth - this.increment;
           height = this.grid.cellWidth;
           break;
-
-        case Direction.Down:
-          hx = h.x * this.grid.cellWidth;
-          hy = (t.y - 1) * this.grid.cellWidth + this.increment
-          width = this.grid.cellWidth;
-          height = this.grid.cellWidth - this.increment;
-          break;
       }
       ctx.fillRect(hx, hy, width, height);
+
+      // Paint delimiting area
+      ctx.beginPath();
+      ctx.rect(h.x*this.grid.cellWidth, h.y*this.grid.cellWidth,
+         this.grid.cellWidth, this.grid.cellWidth);
+
+      ctx.rect(t.x*this.grid.cellWidth, t.y*this.grid.cellWidth,
+        this.grid.cellWidth, this.grid.cellWidth);
+      ctx.strokeStyle = 'red';
+      ctx.stroke();
+
+      // Increment position
+      this.increment++;
     }
 
     // Schedule next frame
