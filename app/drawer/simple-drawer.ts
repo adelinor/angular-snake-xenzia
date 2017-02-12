@@ -1,7 +1,6 @@
-import { Grid }  from '../grid/grid';
-import { Point, MovingPoint } from '../grid/point';
-import { Direction, DirectionUtil } from '../grid/direction';
-import { Snake } from '../snake/snake';
+import { MovingPoint } from '../grid/point';
+import { Direction }   from '../grid/direction';
+import { Snake }       from '../snake/snake';
 
 export class SimpleDrawer {
 
@@ -30,11 +29,11 @@ export class SimpleDrawer {
   drawGrid(): void {
     this.ctx.fillStyle = '#cfcfcf';
 
-    for(let i = this.cellWidth; i < this.gridWidth; i += this.cellWidth) {
+    for (let i = this.cellWidth; i < this.gridWidth; i += this.cellWidth) {
       this.ctx.fillRect(i + 1, 1, 1, this.gridWidth);
     }
 
-    for(let i = this.cellWidth; i < this.gridHeight; i += this.cellWidth) {
+    for (let i = this.cellWidth; i < this.gridHeight; i += this.cellWidth) {
       this.ctx.fillRect(1, i + 1, this.gridHeight, 1);
     }
   }
@@ -93,7 +92,7 @@ export class SimpleDrawer {
 
     switch (t.direction) {
       case Direction.Right:
-        hx = (t.x - 1) * this.cellWidth + increment
+        hx = (t.x - 1) * this.cellWidth + increment;
         hy = t.y * this.cellWidth;
         width = this.cellWidth - increment;
         height = this.cellWidth;
@@ -101,7 +100,7 @@ export class SimpleDrawer {
 
       case Direction.Down:
         hx = t.x * this.cellWidth;
-        hy = (t.y - 1) * this.cellWidth + increment
+        hy = (t.y - 1) * this.cellWidth + increment;
         width = this.cellWidth;
         height = this.cellWidth - increment;
         break;
@@ -126,7 +125,7 @@ export class SimpleDrawer {
 
   highlight(p: MovingPoint, increment: number) {
     this.ctx.beginPath();
-    this.ctx.rect(p.x*this.cellWidth + 1, p.y*this.cellWidth + 1,
+    this.ctx.rect(p.x * this.cellWidth + 1, p.y * this.cellWidth + 1,
        this.cellWidth, this.cellWidth);
 
     this.ctx.strokeStyle = 'red';
