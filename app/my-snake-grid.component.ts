@@ -5,6 +5,7 @@ import { Grid }  from './grid/grid';
 import { Point } from './grid/point';
 import { Direction, DirectionUtil } from './grid/direction';
 import { Snake } from './snake/snake';
+import { SimpleDrawer } from './drawer/simple-drawer';
 
 @Component({
   selector: 'my-snake-grid',
@@ -15,7 +16,9 @@ import { Snake } from './snake/snake';
 export class MySnakeGridComponent {
   @ViewChild('canvas')
   canvasRef: ElementRef;
-  private canvas: any;
+
+  private drawer: SimpleDrawer;
+
   private frameNumber: number = 0;
   // Draw at every {frequency} refresh cycle
   // 1 will draw at every refresh cycle
@@ -49,9 +52,9 @@ export class MySnakeGridComponent {
 
   ngAfterViewInit() {
     console.log('Initialize grid');
-    this.canvas = this.canvasRef.nativeElement;
-    this.canvas.width = this.grid.width;
-    this.canvas.height = this.grid.height;
+    this.drawer = new SimpleDrawer(this.canvasRef.nativeElement,
+      this.grid.width, this.grid.height, this.grid.cellWidth);
+
     this.running = true;
     this.ngZone.runOutsideAngular(() => this.paintLoop());
   }
@@ -68,26 +71,9 @@ export class MySnakeGridComponent {
     // Speed control
     let n = this.frameNumber % this.frequency;
 
-    if (this.canvas.getContext && n === 0) {
-      let ctx = this.canvas.getContext('2d');
-
-      // Delete any previous drawing
-      ctx.fillStyle = 'rgb(255,255,255)';
-      ctx.fillRect(0,0,200,200);
-
-      // Draw the grid
-      ctx.beginPath();
-
-      ctx.fillStyle = '#cfcfcf';
-
-      for(let i = this.grid.cellWidth; i < this.grid.width; i += this.grid.cellWidth) {
-        ctx.fillRect(i,0,1,this.grid.width);
-      }
-      ctx.stroke();
-
-      for(let i = this.grid.cellWidth; i < this.grid.height; i += this.grid.cellWidth) {
-        ctx.fillRect(0,i,this.grid.height,1);
-      }
+    if (n === 0) {
+      this.drawer.deletePrevious();
+      this.drawer.drawGrid();
 
       // Assign direction
       if (this.increment % this.grid.cellWidth === 0) {
@@ -96,103 +82,15 @@ export class MySnakeGridComponent {
         this.snake.move(this.grid);
       }
 
-      // Paint current frame
+      this.drawer.drawSnake(this.snake, this.increment);
 
-      // Paint head
-      ctx.fillStyle = 'rgb(0,0,0)';
-      let h = this.snake.cellAt(0);
-
-      let hx: number, hy: number, width: number, height: number;
-      switch (this.snake.direction) {
-        case Direction.Right:
-          hx = h.x * this.grid.cellWidth;
-          hy = h.y * this.grid.cellWidth;
-          width = this.increment;
-          height = this.grid.cellWidth;
-          break;
-
-        case Direction.Down:
-          hx = h.x * this.grid.cellWidth;
-          hy = h.y * this.grid.cellWidth;
-          width = this.grid.cellWidth;
-          height = this.increment;
-          break;
-
-        case Direction.Left:
-          hx = (h.x + 1) * this.grid.cellWidth - this.increment;
-          hy = h.y * this.grid.cellWidth;
-          width = this.increment;
-          height = this.grid.cellWidth;
-          break;
-
-        case Direction.Up:
-          hx = h.x * this.grid.cellWidth;
-          hy = (h.y + 1) * this.grid.cellWidth - this.increment;
-          width = this.grid.cellWidth;
-          height = this.increment;
-          break;
-
-      }
-      ctx.fillRect(hx, hy, width, height);
-
-      // Paint snake
-      ctx.fillStyle = 'rgb(0,0,0)';
-      for (let i = 1; i < this.snake.length; i++) {
-        let c = this.snake.cellAt(i);
-        ctx.fillRect(
-            c.x * this.grid.cellWidth,
-            c.y * this.grid.cellWidth,
-            this.grid.cellWidth, this.grid.cellWidth);
-      }
-
-      // Paint snake's tails
-      ctx.fillStyle = 'rgb(0,0,0)';
-      let t = this.snake.cellAt(this.snake.length - 1);
-
-      switch (t.direction) {
-        case Direction.Right:
-          hx = (t.x - 1) * this.grid.cellWidth + this.increment
-          hy = t.y * this.grid.cellWidth;
-          width = this.grid.cellWidth - this.increment;
-          height = this.grid.cellWidth;
-          break;
-
-        case Direction.Down:
-          hx = t.x * this.grid.cellWidth;
-          hy = (t.y - 1) * this.grid.cellWidth + this.increment
-          width = this.grid.cellWidth;
-          height = this.grid.cellWidth - this.increment;
-          break;
-
-        case Direction.Left:
-          hx = (t.x + 1) * this.grid.cellWidth;
-          hy = t.y * this.grid.cellWidth;
-          width = this.grid.cellWidth - this.increment;
-          height = this.grid.cellWidth;
-          break;
-
-        case Direction.Up:
-          hx = t.x * this.grid.cellWidth;
-          hy = (t.y + 1) * this.grid.cellWidth;
-          width = this.grid.cellWidth;
-          height = this.grid.cellWidth - this.increment;
-          break;
-
-      }
-      ctx.fillRect(hx, hy, width, height);
-
-      // Paint delimiting area
-      ctx.beginPath();
-      ctx.rect(h.x*this.grid.cellWidth, h.y*this.grid.cellWidth,
-         this.grid.cellWidth, this.grid.cellWidth);
-
-      ctx.rect(t.x*this.grid.cellWidth, t.y*this.grid.cellWidth,
-        this.grid.cellWidth, this.grid.cellWidth);
-      ctx.strokeStyle = 'red';
-      ctx.stroke();
+      // Highlight head and tail
+      this.drawer.highlight(this.snake.head(), this.increment);
+      this.drawer.highlight(this.snake.tail(), this.increment);
 
       // Increment position
       this.increment++;
+
     }
 
     // Schedule next frame
@@ -202,10 +100,11 @@ export class MySnakeGridComponent {
 
   drawSmiley() {
     console.log('Draw grid');
-    if (this.canvas.getContext) {
-      let ctx = this.canvas.getContext('2d');
-      let w = this.canvas.width;
-      let h = this.canvas.height;
+    let canvas = this.canvasRef.nativeElement;
+    if (canvas.getContext) {
+      let ctx = canvas.getContext('2d');
+      let w = canvas.width;
+      let h = canvas.height;
 
       ctx.beginPath();
       // Outer circle

@@ -18,6 +18,14 @@ describe('Snake', function () {
     snake = new Snake(3);
   });
 
+  it('should return head', () => {
+    expect(snake.head()).toEqual(snake.cellAt(0));
+  });
+
+  it('should return tail', () => {
+    expect(snake.tail()).toEqual(snake.cellAt(snake.length - 1));
+  });
+
   it('should create horizontal snake', () => {
     expect(snake).toBeDefined();
     expect(snake.length).toEqual(3);

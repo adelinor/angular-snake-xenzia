@@ -47,4 +47,12 @@ export class Snake {
     this.cells[0] = new MovingPoint(newHeadPosition, this.direction);
   }
 
+  head(): MovingPoint {
+    return this.cells[0];
+  }
+
+  tail(): MovingPoint {
+    return this.cells[this.cells.length - 1];
+  }
+
 }
