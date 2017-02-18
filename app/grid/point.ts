@@ -18,4 +18,35 @@ export class MovingPoint extends Point {
     this.direction = direction;
   }
 
+  move(): MovingPoint {
+    return this.moveTowards(this.direction);
+  }
+
+  /**
+   * Move towards provided direction and ignore
+   * direction of the moving point
+   */
+  moveTowards(direction: Direction): MovingPoint {
+    let moveX = 0;
+    let moveY = 0;
+
+    switch (direction) {
+      case Direction.Right:
+        moveX = 1;
+        break;
+      case Direction.Left:
+        moveX = -1;
+        break;
+      case Direction.Down:
+        moveY = 1;
+        break;
+      case Direction.Up:
+        moveY = -1;
+        break;
+    }
+
+    return new MovingPoint(
+      new Point(this.x + moveX, this.y + moveY), direction);
+  }
+
 }

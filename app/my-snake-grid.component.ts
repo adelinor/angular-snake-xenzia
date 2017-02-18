@@ -23,7 +23,7 @@ export class MySnakeGridComponent {
   // Draw at every {frequency} refresh cycle
   // 1 will draw at every refresh cycle
   // 2 every second cycle, etc
-  private frequency: number = 20;
+  private frequency: number = 10;
 
   private increment: number;
   private running: boolean;
@@ -52,8 +52,7 @@ export class MySnakeGridComponent {
 
   ngAfterViewInit() {
     console.log('Initialize grid');
-    this.drawer = new SimpleDrawer(this.canvasRef.nativeElement,
-      this.grid.width, this.grid.height, this.grid.cellWidth);
+    this.drawer = new SimpleDrawer(this.canvasRef.nativeElement, this.grid);
 
     this.running = true;
     this.ngZone.runOutsideAngular(() => this.paintLoop());
@@ -79,7 +78,7 @@ export class MySnakeGridComponent {
       if (this.increment % this.grid.cellWidth === 0) {
         this.increment = 0;
 
-        this.snake.move(this.grid);
+        this.snake.move();
       }
 
       this.drawer.drawSnake(this.snake, this.increment);

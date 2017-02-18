@@ -1,13 +1,6 @@
 import { Point }     from './point';
-import { Direction } from './direction';
 
-export interface MoveByOneStep {
-
-  getNext(point: Point, direction: Direction): Point;
-
-}
-
-export class Grid implements MoveByOneStep {
+export class Grid {
   private _columns: number;
   private _rows: number;
 
@@ -36,47 +29,37 @@ export class Grid implements MoveByOneStep {
     return this._cellWidth;
   }
 
-  toFactor(direction: Direction): Point {
-    let x = 0;
-    let y = 0;
+  coordinates(col: number, row: number, offsetX: number, offsetY: number): Point {
+    this.checkOffset(offsetX, 'offsetX');
+    this.checkOffset(offsetY, 'offsetY');
 
-    if (direction === Direction.Right) {
-      x = 1;
-    } else if (direction === Direction.Left) {
-      x = -1;
-    } else if (direction === Direction.Down) {
-      y = 1;
-    } else if (direction === Direction.Up) {
-      y = -1;
+    row = row % this.rows;
+    if (row < 0) {
+      row += this.rows;
     }
 
-    return new Point(x, y);
+    col = col % this.columns;
+    if (col < 0) {
+      col += this.columns;
+    }
+
+    if (row === 0 && offsetY < 0) {
+      row = this.rows;
+    }
+    if (col === 0 && offsetX < 0) {
+      col = this.columns;
+    }
+
+    return new Point(col * this.cellWidth + offsetX,
+      row * this.cellWidth + offsetY);
   }
 
-  // TODO remove?
-  increment(point: Point, direction: Direction): Point {
-    let f = this.toFactor(direction);
-    return new Point(point.x + f.x, point.y + f.y);
-  }
-
-  getNext(point: Point, direction: Direction): Point {
-    point = this.increment(point, direction);
-    let x = point.x;
-    let y = point.y;
-
-    if (x >= this._columns) {
-      x = 0;
+  private checkOffset(offset: number, paramName: string): void {
+    let min = - this.cellWidth + 1;
+    let max = this.cellWidth - 1;
+    if (offset < min || offset > max) {
+      throw new RangeError('Parameter ' + paramName + ' must be between '
+        + min + ' and ' + max);
     }
-    if (x < 0) {
-      x = this._columns - 1;
-    }
-    if (y >= this._rows) {
-      y = 0;
-    }
-    if (y < 0) {
-      y = this._rows - 1;
-    }
-
-    return new Point(x, y);
   }
 }

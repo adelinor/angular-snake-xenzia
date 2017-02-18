@@ -1,26 +1,24 @@
 import { MovingPoint } from '../grid/point';
 import { Direction }   from '../grid/direction';
+import { Grid }   from '../grid/grid';
 import { Snake }       from '../snake/snake';
 
 export class SimpleDrawer {
 
   private ctx: any;
 
-  constructor(private canvas: any,
-    private gridWidth: number,
-    private gridHeight: number,
-    private cellWidth: number) {
-      this.canvas.width = gridWidth + 2;
-      this.canvas.height = gridHeight + 2;
+  constructor(private canvas: any, private grid: Grid) {
+      this.canvas.width = this.grid.width + 2;
+      this.canvas.height = this.grid.height + 2;
       this.ctx = this.canvas.getContext('2d');
   }
 
   deletePrevious(): void {
     this.ctx.fillStyle = 'rgb(255,255,255)';
-    this.ctx.fillRect(1, 1, this.gridWidth, this.gridHeight);
+    this.ctx.fillRect(1, 1, this.grid.width, this.grid.height);
 
     this.ctx.beginPath();
-    this.ctx.rect(0, 0, this.gridWidth + 2, this.gridHeight + 2);
+    this.ctx.rect(0, 0, this.grid.width + 2, this.grid.height + 2);
     this.ctx.strokeStyle = 'black';
     this.ctx.stroke();
 
@@ -29,61 +27,69 @@ export class SimpleDrawer {
   drawGrid(): void {
     this.ctx.fillStyle = '#cfcfcf';
 
-    for (let i = this.cellWidth; i < this.gridWidth; i += this.cellWidth) {
-      this.ctx.fillRect(i + 1, 1, 1, this.gridWidth);
+    for (let i = this.grid.cellWidth; i < this.grid.width; i += this.grid.cellWidth) {
+      this.ctx.fillRect(i + 1, 1, 1, this.grid.width);
     }
 
-    for (let i = this.cellWidth; i < this.gridHeight; i += this.cellWidth) {
-      this.ctx.fillRect(1, i + 1, this.gridHeight, 1);
+    for (let i = this.grid.cellWidth; i < this.grid.height; i += this.grid.cellWidth) {
+      this.ctx.fillRect(1, i + 1, this.grid.height, 1);
     }
   }
 
   drawSnake(snake: Snake, increment: number) {
     // Paint head
     this.ctx.fillStyle = 'rgb(0,0,0)';
-    let h = snake.cellAt(0);
+    let h = snake.head();
 
-    let hx: number, hy: number, width: number, height: number;
+    let x: number, y: number, width: number, height: number;
+    let offsetX: number, offsetY: number;
     switch (snake.direction) {
       case Direction.Right:
-        hx = h.x * this.cellWidth;
-        hy = h.y * this.cellWidth;
+        x = h.x;
+        y = h.y;
+        offsetX = 0;
+        offsetY = 0;
         width = increment;
-        height = this.cellWidth;
+        height = this.grid.cellWidth;
         break;
 
       case Direction.Down:
-        hx = h.x * this.cellWidth;
-        hy = h.y * this.cellWidth;
-        width = this.cellWidth;
+        x = h.x;
+        y = h.y;
+        offsetX = 0;
+        offsetY = 0;
+        width = this.grid.cellWidth;
         height = increment;
         break;
 
       case Direction.Left:
-        hx = (h.x + 1) * this.cellWidth - increment;
-        hy = h.y * this.cellWidth;
+        x = h.x + 1;
+        y = h.y;
+        offsetX = - increment;
+        offsetY = 0;
         width = increment;
-        height = this.cellWidth;
+        height = this.grid.cellWidth;
         break;
 
       case Direction.Up:
-        hx = h.x * this.cellWidth;
-        hy = (h.y + 1) * this.cellWidth - increment;
-        width = this.cellWidth;
+        x = h.x;
+        y = h.y + 1;
+        offsetX = 0;
+        offsetY = - increment;
+        width = this.grid.cellWidth;
         height = increment;
         break;
-
     }
-    this.ctx.fillRect(hx + 1, hy + 1, width, height);
+    let p = this.grid.coordinates(x, y, offsetX, offsetY);
+    this.ctx.fillRect(p.x + 1, p.y + 1, width, height);
 
     // Paint snake
     this.ctx.fillStyle = 'rgb(0,0,0)';
     for (let i = 1; i < snake.length; i++) {
       let c = snake.cellAt(i);
-      this.ctx.fillRect(
-          c.x * this.cellWidth + 1,
-          c.y * this.cellWidth + 1,
-          this.cellWidth, this.cellWidth);
+      p = this.grid.coordinates(c.x, c.y, 0, 0);
+      this.ctx.fillRect(p.x + 1, p.y + 1,
+          this.grid.cellWidth, this.grid.cellWidth);
     }
 
     // Paint snake's tails
@@ -92,41 +98,50 @@ export class SimpleDrawer {
 
     switch (t.direction) {
       case Direction.Right:
-        hx = (t.x - 1) * this.cellWidth + increment;
-        hy = t.y * this.cellWidth;
-        width = this.cellWidth - increment;
-        height = this.cellWidth;
+        x = t.x - 1;
+        y = t.y;
+        offsetX = increment;
+        offsetY = 0;
+        width = this.grid.cellWidth - increment;
+        height = this.grid.cellWidth;
         break;
 
       case Direction.Down:
-        hx = t.x * this.cellWidth;
-        hy = (t.y - 1) * this.cellWidth + increment;
-        width = this.cellWidth;
-        height = this.cellWidth - increment;
+        x = t.x;
+        y = t.y - 1;
+        offsetX = 0;
+        offsetY = increment;
+        width = this.grid.cellWidth;
+        height = this.grid.cellWidth - increment;
         break;
 
       case Direction.Left:
-        hx = (t.x + 1) * this.cellWidth;
-        hy = t.y * this.cellWidth;
-        width = this.cellWidth - increment;
-        height = this.cellWidth;
+        x = t.x + 1;
+        y = t.y;
+        offsetX = 0;
+        offsetY = 0;
+        width = this.grid.cellWidth - increment;
+        height = this.grid.cellWidth;
         break;
 
       case Direction.Up:
-        hx = t.x * this.cellWidth;
-        hy = (t.y + 1) * this.cellWidth;
-        width = this.cellWidth;
-        height = this.cellWidth - increment;
+        x = t.x;
+        y = t.y + 1;
+        offsetX = 0;
+        offsetY = 0;
+        width = this.grid.cellWidth;
+        height = this.grid.cellWidth - increment;
         break;
-
     }
-    this.ctx.fillRect(hx + 1, hy + 1, width, height);
+    p = this.grid.coordinates(x, y, offsetX, offsetY);
+    this.ctx.fillRect(p.x + 1, p.y + 1, width, height);
   }
 
-  highlight(p: MovingPoint, increment: number) {
+  highlight(point: MovingPoint, increment: number) {
     this.ctx.beginPath();
-    this.ctx.rect(p.x * this.cellWidth + 1, p.y * this.cellWidth + 1,
-       this.cellWidth, this.cellWidth);
+    let p = this.grid.coordinates(point.x, point.y, 0, 0);
+    this.ctx.rect(p.x + 1, p.y + 1,
+       this.grid.cellWidth, this.grid.cellWidth);
 
     this.ctx.strokeStyle = 'red';
     this.ctx.stroke();

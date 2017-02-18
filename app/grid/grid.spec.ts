@@ -1,5 +1,4 @@
 import { Grid }      from './grid';
-import { Direction } from './direction';
 
 describe('Grid', function () {
   let grid: Grid;
@@ -8,60 +7,26 @@ describe('Grid', function () {
     grid = new Grid(200, 200, 10);
   });
 
-  it('should be able to compute getNext', () => {
-    let next = grid.getNext({x: 0, y: 0}, Direction.Right);
+  it('converts to pixel coordinates', () => {
+    let p = grid.coordinates(0, 0, 0, 0);
+    expect(p).toBeDefined();
+    expect(p.x).toEqual(0);
+    expect(p.y).toEqual(0);
 
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(1);
-    expect(next.y).toEqual(0);
+    p = grid.coordinates(0, 0, 1, 2);
+    expect(p).toBeDefined();
+    expect(p.x).toEqual(1);
+    expect(p.y).toEqual(2);
 
-    next = grid.getNext({x: 18, y: 0}, Direction.Right);
+    p = grid.coordinates(1, 2, 0, 0);
+    expect(p).toBeDefined();
+    expect(p.x).toEqual(10);
+    expect(p.y).toEqual(20);
 
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(19);
-    expect(next.y).toEqual(0);
-
-    next = grid.getNext(next, Direction.Right);
-
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(0);
-    expect(next.y).toEqual(0);
-
-    next = grid.getNext({x: 0, y: 0}, Direction.Left);
-
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(19);
-    expect(next.y).toEqual(0);
-
-    next = grid.getNext({x: 19, y: 0}, Direction.Left);
-
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(18);
-    expect(next.y).toEqual(0);
-
-    next = grid.getNext({x: 0, y: 18}, Direction.Down);
-
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(0);
-    expect(next.y).toEqual(19);
-
-    next = grid.getNext({x: 0, y: 19}, Direction.Down);
-
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(0);
-    expect(next.y).toEqual(0);
-
-    next = grid.getNext({x: 0, y: 0}, Direction.Up);
-
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(0);
-    expect(next.y).toEqual(19);
-
-    next = grid.getNext({x: 0, y: 19}, Direction.Up);
-
-    expect(next).toBeDefined();
-    expect(next.x).toEqual(0);
-    expect(next.y).toEqual(18);
+    p = grid.coordinates(0, 0, -1, -2);
+    expect(p).toBeDefined();
+    expect(p.x).toEqual(199);
+    expect(p.y).toEqual(198);
 
   });
 
