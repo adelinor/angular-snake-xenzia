@@ -29,7 +29,7 @@ After the `npm start` you should see:
       - current length
       - overall position in the grid
       - crossing functions
-      - pixel distance between head position and square center
+      - pixel distance between head position and square center. For instance if the snake width is 10, the distance can be 0, -1, -2, -3, 4, 3, 2, 1, 0 and so on.
   - introduce a grid class to:
       - present itself as a discreet positioning system going from zero to n
         where n takes into account the width of the drawn grid and the width of
@@ -38,6 +38,10 @@ After the `npm start` you should see:
       - draw the grid
       - draw the snake
 * Update grid to allow snake to cross top, right, bottom and left borders
+* Drop snake food
+  - method to grow the snake by one
+  - method to drop food
+  - detect food consumption
 * Draw the snake with red and yellow squares
 * Drop one big red dot of food for every 5 standard dots consumed
 * Add a timer to the big red dot, reduce bonus points, as time goes, and
