@@ -79,6 +79,11 @@ export class MySnakeGridComponent {
         this.increment = 0;
 
         this.snake.move();
+
+        if (this.snake.isColliding()) {
+          this.togglePause();
+          alert('Game over');
+        }
       }
 
       this.drawer.drawSnake(this.snake, this.increment);

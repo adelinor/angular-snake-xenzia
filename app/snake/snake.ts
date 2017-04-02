@@ -44,6 +44,16 @@ export class Snake {
     this.cells[0] = newHeadPosition;
   }
 
+  isColliding(): boolean {
+    let h = this.head();
+    for (let i = this.cells.length - 1; i > 0; i--) {
+      if (this.cells[i].samePosition(h)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   head(): MovingPoint {
     return this.cells[0];
   }
