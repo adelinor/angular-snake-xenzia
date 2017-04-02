@@ -4,14 +4,14 @@ import { Direction }           from './direction';
 describe('Point', function () {
 
   it('can be compared', () => {
-    let p1 = new Point(2,3);
+    let p1 = new Point(2, 3);
     expect(p1.samePosition(null)).toBeFalsy();
     expect(p1.samePosition(p1)).toBeTruthy();
 
-    let p2 = new Point(3,2);
+    let p2 = new Point(3, 2);
     expect(p1.samePosition(p2)).toBeFalsy();
 
-    let p3 = new Point(2,3);
+    let p3 = new Point(2, 3);
     expect(p1.samePosition(p3)).toBeTruthy();
 
   });
