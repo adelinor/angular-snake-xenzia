@@ -8,6 +8,14 @@ export class Point {
       this.x = xPosition;
       this.y = yPosition;
     }
+
+    public samePosition(other: Point): boolean {
+      let result = false;
+      if (other) {
+        result = this.x === other.x && this.y === other.y;
+      }
+      return result;
+    }
 }
 
 export class MovingPoint extends Point {
